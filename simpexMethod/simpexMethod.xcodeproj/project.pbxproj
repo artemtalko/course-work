@@ -14,6 +14,10 @@
 		196610ED2C0BB59A00F85565 /* PythonKit in Frameworks */ = {isa = PBXBuildFile; productRef = 196610EC2C0BB59A00F85565 /* PythonKit */; };
 		196610F22C0BC70500F85565 /* ResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196610F12C0BC70500F85565 /* ResultViewController.swift */; };
 		196610F42C0CDB6D00F85565 /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196610F32C0CDB6D00F85565 /* ResultView.swift */; };
+		196A98172C0E38F300D25DEE /* SimplexTableauCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196A98162C0E38F300D25DEE /* SimplexTableauCell.swift */; };
+		196A98192C0F216300D25DEE /* LinearModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196A98182C0F216300D25DEE /* LinearModel.swift */; };
+		196A981B2C0F38E600D25DEE /* Vector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196A981A2C0F38E600D25DEE /* Vector.swift */; };
+		196A981D2C0F391100D25DEE /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196A981C2C0F391100D25DEE /* Matrix.swift */; };
 		19923C802C0CEAFE008D749A /* SimplexTableau.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19923C7F2C0CEAFE008D749A /* SimplexTableau.swift */; };
 		199F1AEE2C07987500D54EF2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199F1AED2C07987500D54EF2 /* AppDelegate.swift */; };
 		199F1AF02C07987500D54EF2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199F1AEF2C07987500D54EF2 /* SceneDelegate.swift */; };
@@ -30,6 +34,10 @@
 		196610E82C0A505600F85565 /* InputFunctionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputFunctionTableViewCell.swift; sourceTree = "<group>"; };
 		196610F12C0BC70500F85565 /* ResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultViewController.swift; sourceTree = "<group>"; };
 		196610F32C0CDB6D00F85565 /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
+		196A98162C0E38F300D25DEE /* SimplexTableauCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplexTableauCell.swift; sourceTree = "<group>"; };
+		196A98182C0F216300D25DEE /* LinearModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinearModel.swift; sourceTree = "<group>"; };
+		196A981A2C0F38E600D25DEE /* Vector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vector.swift; sourceTree = "<group>"; };
+		196A981C2C0F391100D25DEE /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
 		19923C7F2C0CEAFE008D749A /* SimplexTableau.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplexTableau.swift; sourceTree = "<group>"; };
 		199F1AEA2C07987500D54EF2 /* simpexMethod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = simpexMethod.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		199F1AED2C07987500D54EF2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -59,8 +67,19 @@
 			isa = PBXGroup;
 			children = (
 				196610E82C0A505600F85565 /* InputFunctionTableViewCell.swift */,
+				196A98162C0E38F300D25DEE /* SimplexTableauCell.swift */,
 			);
 			path = Elements;
+			sourceTree = "<group>";
+		};
+		196A981E2C0F6C7500D25DEE /* Waste of time */ = {
+			isa = PBXGroup;
+			children = (
+				196A98182C0F216300D25DEE /* LinearModel.swift */,
+				196A981A2C0F38E600D25DEE /* Vector.swift */,
+				196A981C2C0F391100D25DEE /* Matrix.swift */,
+			);
+			path = "Waste of time";
 			sourceTree = "<group>";
 		};
 		199F1AE12C07987500D54EF2 = {
@@ -143,6 +162,7 @@
 		199F1B0A2C07C4C700D54EF2 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				196A981E2C0F6C7500D25DEE /* Waste of time */,
 				19923C7F2C0CEAFE008D749A /* SimplexTableau.swift */,
 			);
 			path = Model;
@@ -230,12 +250,16 @@
 				196610E92C0A505600F85565 /* InputFunctionTableViewCell.swift in Sources */,
 				199F1AF22C07987500D54EF2 /* InputViewController.swift in Sources */,
 				199F1AEE2C07987500D54EF2 /* AppDelegate.swift in Sources */,
+				196A98172C0E38F300D25DEE /* SimplexTableauCell.swift in Sources */,
 				199F1B0C2C07C57700D54EF2 /* InputView.swift in Sources */,
 				199F1B072C07C43700D54EF2 /* SimplexSolution.swift in Sources */,
 				199F1AF02C07987500D54EF2 /* SceneDelegate.swift in Sources */,
 				196610E52C08FFB700F85565 /* InputFunctionViewController.swift in Sources */,
 				19923C802C0CEAFE008D749A /* SimplexTableau.swift in Sources */,
 				196610F42C0CDB6D00F85565 /* ResultView.swift in Sources */,
+				196A981B2C0F38E600D25DEE /* Vector.swift in Sources */,
+				196A981D2C0F391100D25DEE /* Matrix.swift in Sources */,
+				196A98192C0F216300D25DEE /* LinearModel.swift in Sources */,
 				196610E72C090EE300F85565 /* InputFunctionView.swift in Sources */,
 				196610F22C0BC70500F85565 /* ResultViewController.swift in Sources */,
 			);

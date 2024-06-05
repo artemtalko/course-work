@@ -101,27 +101,71 @@ extension InputFunctionViewController {
             constraintsData.append((decimalCoefficients, constraintValues.sign, rhs))
         }
         
+        print("constraintsData-->>>>")
+        print(constraintsData)
+        print("------------------")
         return constraintsData
     }
     
-    private func prepareSimplexTableau() {
-        let targetCoeff = getTargetFunctionData()
-        let constrData = getConstraintsData()
+    private func prepareSimplexTableau() -> SimplexTableau {
+        //F(x1...xn) = c1x1 + c2x2 + ... + cnxn *below*
+         let targetCoeff = getTargetFunctionData()
         
+        //table of coeficients below
+        //save like below:
+//        ▿ 5 elements
+//          ▿ 0 : 3 elements
+//            ▿ coefficients : 2 elements
+//              ▿ 0 : 1
+//                ▿ _mantissa : 8 elements
+//                  - .0 : 1
+//                  - .1 : 0
+//                  - .2 : 0
+//                  - .3 : 0
+//                  - .4 : 0
+//                  - .5 : 0
+//                  - .6 : 0
+//                  - .7 : 0
+//              ▿ 1 : 1
+//                ▿ _mantissa : 8 elements
+//                  - .0 : 1
+//                  - .1 : 0
+//                  - .2 : 0
+//                  - .3 : 0
+//                  - .4 : 0
+//                  - .5 : 0
+//                  - .6 : 0
+//                  - .7 : 0
+//            - sign : "≤"
+//            ▿ rhs : Optional<NSDecimal>
+//              ▿ some : 12
+//                ▿ _mantissa : 8 elements
+//                  - .0 : 12
+//                  - .1 : 0
+//                  - .2 : 0
+//                  - .3 : 0
+//                  - .4 : 0
+//                  - .5 : 0
+//                  - .6 : 0
+//                  - .7 : 0
+// приклад для 1 рядка таблиці
+
+         let constrData = getConstraintsData()
+         
+         var A: [[Decimal]] = []
+         var b: [Decimal] = []
+         
+         for constraint in constrData {
+             guard let rhs = constraint.rhs else {
+                 continue
+             }
+             A.append(constraint.coefficients)
+             b.append(rhs)
+         }
+         
+        print(SimplexTableau(c: targetCoeff, A: A, b: b))
         
-        var A: [[Decimal]] = []
-        var b: [Decimal] = []
-        
-        for constraint in constrData {
-            guard let rhs = constraint.rhs else {
-                continue
-            }
-            A.append(constraint.coefficients)
-            b.append(rhs)
-        }
-        
-        let simplex = SimplexTableau(c: targetCoeff, A: A, b: b)
-        simplex.getTableu()
+        return SimplexTableau(c: targetCoeff, A: A, b: b)
     }
 }
 
@@ -130,7 +174,11 @@ extension InputFunctionViewController {
 extension InputFunctionViewController {
     @objc private func selectionButtonPressed(_ sender: UIButton) {
         let resultVC = ResultViewController()
-        prepareSimplexTableau()
+        let simplexTableau = prepareSimplexTableau()
+        
+        
+        resultVC.configure(simplexTableau: simplexTableau)
+        
         
         navigationController?.pushViewController(resultVC, animated: true)
     }

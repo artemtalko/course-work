@@ -35,6 +35,7 @@ struct SimplexTableau {
             print(row.map { String(describing: $0) }.joined(separator: "\t"))
         }
         
+        
         return tableau
     }
 }
