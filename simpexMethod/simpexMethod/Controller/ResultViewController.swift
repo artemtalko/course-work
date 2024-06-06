@@ -12,14 +12,13 @@ final class ResultViewController: UIViewController {
     private var simplexSolution: SimplexSolution?
     private var simplexTableau: SimplexTableau?
     
-    var iterations: [[[Decimal]]] = [] {
+    var iterations: [[[Fraction]]] = [] {
         didSet {
             setupTables()
         }
     }
 
-    
-    var tableau: [[Decimal]] = [] {
+    var tableau: [[Fraction]] = [] {
         didSet {
             mainView.simplexTableView.reloadData()
         }
@@ -41,15 +40,12 @@ final class ResultViewController: UIViewController {
     }
 
     func configure(simplexTableau: SimplexTableau) {
-       
         self.simplexSolution = SimplexSolution(tableau: simplexTableau)
         tableau = simplexTableau.tableau
-//        print("ResultViewController: tableau")
-//        print(tableau)
-//        print("-----------------------------")
     }
     
     private func setupTables() {
+    
         for subview in mainView.stackView.arrangedSubviews where subview is UITableView {
             mainView.stackView.removeArrangedSubview(subview)
             subview.removeFromSuperview()
@@ -67,7 +63,6 @@ final class ResultViewController: UIViewController {
         }
     }
 
-
     private func addTargets() {
         mainView.solveButton.addTarget(self, action: #selector(solveSimplexMethod), for: .touchUpInside)
     }
@@ -75,22 +70,12 @@ final class ResultViewController: UIViewController {
     @objc private func solveSimplexMethod() {
         guard let simplexSolution = simplexSolution else { return }
         
-//        let result = simplexSolution.solveWithIterations()
-//        print("ResultViewController: solveSimplexMethod()")
-//        print(result)
-//        print("------------------------------------------")
-//        print("\n")
-//        print("\n")
-//        iterations = result.iterations
         let result = simplexSolution.solveWithIterations()
         iterations = result.iterations
         
         // Виведення фінального рішення в консоль
         print("Final Solution:")
         print(result.solutionString)
-//        print("Iterations:")
-//        print(iterations)
-        //mainView.displaySolution(result.solutionString)
     }
     
     private func setupTableView() {

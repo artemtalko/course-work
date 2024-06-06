@@ -18,6 +18,7 @@
 		196A98192C0F216300D25DEE /* LinearModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196A98182C0F216300D25DEE /* LinearModel.swift */; };
 		196A981B2C0F38E600D25DEE /* Vector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196A981A2C0F38E600D25DEE /* Vector.swift */; };
 		196A981D2C0F391100D25DEE /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196A981C2C0F391100D25DEE /* Matrix.swift */; };
+		196A98212C10D84200D25DEE /* Fraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196A98202C10D84200D25DEE /* Fraction.swift */; };
 		19923C802C0CEAFE008D749A /* SimplexTableau.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19923C7F2C0CEAFE008D749A /* SimplexTableau.swift */; };
 		199F1AEE2C07987500D54EF2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199F1AED2C07987500D54EF2 /* AppDelegate.swift */; };
 		199F1AF02C07987500D54EF2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199F1AEF2C07987500D54EF2 /* SceneDelegate.swift */; };
@@ -38,6 +39,7 @@
 		196A98182C0F216300D25DEE /* LinearModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinearModel.swift; sourceTree = "<group>"; };
 		196A981A2C0F38E600D25DEE /* Vector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vector.swift; sourceTree = "<group>"; };
 		196A981C2C0F391100D25DEE /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
+		196A98202C10D84200D25DEE /* Fraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fraction.swift; sourceTree = "<group>"; };
 		19923C7F2C0CEAFE008D749A /* SimplexTableau.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplexTableau.swift; sourceTree = "<group>"; };
 		199F1AEA2C07987500D54EF2 /* simpexMethod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = simpexMethod.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		199F1AED2C07987500D54EF2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 			children = (
 				196A981E2C0F6C7500D25DEE /* Waste of time */,
 				19923C7F2C0CEAFE008D749A /* SimplexTableau.swift */,
+				196A98202C10D84200D25DEE /* Fraction.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 				196A98192C0F216300D25DEE /* LinearModel.swift in Sources */,
 				196610E72C090EE300F85565 /* InputFunctionView.swift in Sources */,
 				196610F22C0BC70500F85565 /* ResultViewController.swift in Sources */,
+				196A98212C10D84200D25DEE /* Fraction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

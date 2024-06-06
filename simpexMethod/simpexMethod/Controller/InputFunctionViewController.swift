@@ -5,7 +5,6 @@
 //  Created by Artem Talko on 30.05.2024.
 //
 
-
 import UIKit
 
 final class InputFunctionViewController: UIViewController {
@@ -68,14 +67,14 @@ extension InputFunctionViewController {
 //MARK: Get Data from TableView
 extension InputFunctionViewController {
     // Target function coefficients
-    private func getTargetFunctionData() -> [Decimal] {
-        var targetFunctionData: [Decimal] = []
+    private func getTargetFunctionData() -> [Fraction] {
+        var targetFunctionData: [Fraction] = []
         
         for textField in mainView.coefficientTextFields {
-            guard let text = textField.text, let value = Decimal(string: text) else {
+            guard let text = textField.text, let value = Double(text) else {
                 continue
             }
-            targetFunctionData.append(value)
+            targetFunctionData.append(Fraction(Int(value), 1))
         }
         
         return targetFunctionData
@@ -85,8 +84,8 @@ extension InputFunctionViewController {
     ///coefficients are for each variable in the target function
     ///sign is the sign of the constraint
     ///rhs is the right hand side of the constraint
-    private func getConstraintsData() -> [(coefficients: [Decimal], sign: String, rhs: Decimal?)]{
-        var constraintsData: [(coefficients: [Decimal], sign: String, rhs: Decimal?)] = []
+    private func getConstraintsData() -> [(coefficients: [Fraction], sign: String, rhs: Fraction?)]{
+        var constraintsData: [(coefficients: [Fraction], sign: String, rhs: Fraction?)] = []
         
         for cell in mainView.constraintsTableView.visibleCells {
             guard let inputCell = cell as? InputFunctionTableViewCell else {
@@ -96,9 +95,9 @@ extension InputFunctionViewController {
             guard let coefficients = constraintValues.coefficients else {
                 continue
             }
-            let decimalCoefficients = coefficients.map { Decimal($0) }
-            let rhs = constraintValues.rhs.map { Decimal($0) }
-            constraintsData.append((decimalCoefficients, constraintValues.sign, rhs))
+            let fractionCoefficients = coefficients.map { Fraction(Int($0), 1) }
+            let rhs = constraintValues.rhs.map { Fraction(Int($0), 1) }
+            constraintsData.append((fractionCoefficients, constraintValues.sign, rhs))
         }
         
         print("constraintsData-->>>>")
@@ -108,60 +107,19 @@ extension InputFunctionViewController {
     }
     
     private func prepareSimplexTableau() -> SimplexTableau {
-        //F(x1...xn) = c1x1 + c2x2 + ... + cnxn *below*
-         let targetCoeff = getTargetFunctionData()
-        
-        //table of coeficients below
-        //save like below:
-//        ▿ 5 elements
-//          ▿ 0 : 3 elements
-//            ▿ coefficients : 2 elements
-//              ▿ 0 : 1
-//                ▿ _mantissa : 8 elements
-//                  - .0 : 1
-//                  - .1 : 0
-//                  - .2 : 0
-//                  - .3 : 0
-//                  - .4 : 0
-//                  - .5 : 0
-//                  - .6 : 0
-//                  - .7 : 0
-//              ▿ 1 : 1
-//                ▿ _mantissa : 8 elements
-//                  - .0 : 1
-//                  - .1 : 0
-//                  - .2 : 0
-//                  - .3 : 0
-//                  - .4 : 0
-//                  - .5 : 0
-//                  - .6 : 0
-//                  - .7 : 0
-//            - sign : "≤"
-//            ▿ rhs : Optional<NSDecimal>
-//              ▿ some : 12
-//                ▿ _mantissa : 8 elements
-//                  - .0 : 12
-//                  - .1 : 0
-//                  - .2 : 0
-//                  - .3 : 0
-//                  - .4 : 0
-//                  - .5 : 0
-//                  - .6 : 0
-//                  - .7 : 0
-// приклад для 1 рядка таблиці
-
-         let constrData = getConstraintsData()
+        let targetCoeff = getTargetFunctionData()
+        let constrData = getConstraintsData()
          
-         var A: [[Decimal]] = []
-         var b: [Decimal] = []
+        var A: [[Fraction]] = []
+        var b: [Fraction] = []
          
-         for constraint in constrData {
-             guard let rhs = constraint.rhs else {
-                 continue
-             }
-             A.append(constraint.coefficients)
-             b.append(rhs)
-         }
+        for constraint in constrData {
+            guard let rhs = constraint.rhs else {
+                continue
+            }
+            A.append(constraint.coefficients)
+            b.append(rhs)
+        }
          
         print(SimplexTableau(c: targetCoeff, A: A, b: b))
         
@@ -176,9 +134,7 @@ extension InputFunctionViewController {
         let resultVC = ResultViewController()
         let simplexTableau = prepareSimplexTableau()
         
-        
         resultVC.configure(simplexTableau: simplexTableau)
-        
         
         navigationController?.pushViewController(resultVC, animated: true)
     }
