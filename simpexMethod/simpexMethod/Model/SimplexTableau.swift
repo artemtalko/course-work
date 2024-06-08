@@ -9,31 +9,33 @@ import Foundation
 
 struct SimplexTableau {
     var tableau: [[Fraction]]
-    var numberOfVariables: Int
     var numberOfConstraints: Int
-
+    var numberOfVariables: Int
+    
     init(c: [Fraction], A: [[Fraction]], b: [Fraction]) {
-        self.numberOfVariables = c.count
-        self.numberOfConstraints = b.count
-        self.tableau = Array(repeating: Array(repeating: Fraction(0, 1), count: numberOfVariables + numberOfConstraints + 1), count: numberOfConstraints + 1)
-
+        let numberOfConstraints = A.count
+        let numberOfVariables = c.count
+        
+        var tableau = A
+        
+        // Add slack variables
         for i in 0..<numberOfConstraints {
-            for j in 0..<numberOfVariables {
-                tableau[i][j] = A[i][j]
+            for j in 0..<numberOfConstraints {
+                tableau[i].append(Fraction(i == j ? 1 : 0, 1, .slack))
             }
-            tableau[i][numberOfVariables + i] = Fraction(1, 1)
-            tableau[i][numberOfVariables + numberOfConstraints] = b[i]
+            tableau[i].append(b[i])
         }
-
-        for j in 0..<numberOfVariables {
-            tableau[numberOfConstraints][j] = -c[j]
+        
+        // Add objective function row
+        var objectiveFunctionRow = c.map { Fraction(-$0.numerator, $0.denominator, $0.varType) }
+        for _ in 0..<numberOfConstraints {
+            objectiveFunctionRow.append(Fraction(0, 1, .slack))
         }
-    }
-
-    func getTableau() -> [[Fraction]] {
-        for row in tableau {
-            print(row.map { $0.description }.joined(separator: "\t"))
-        }
-        return tableau
+        objectiveFunctionRow.append(Fraction(0, 1, .regular))
+        tableau.append(objectiveFunctionRow)
+        
+        self.tableau = tableau
+        self.numberOfConstraints = numberOfConstraints
+        self.numberOfVariables = numberOfVariables
     }
 }

@@ -10,11 +10,14 @@ import Foundation
 struct Fraction: CustomStringConvertible, Comparable {
     var numerator: Int
     var denominator: Int
+    var varType: VariableType?
 
-    init(_ numerator: Int, _ denominator: Int) {
+    init(_ numerator: Int, _ denominator: Int, _ varType: VariableType? = nil) {
         let gcd = Fraction.gcd(abs(numerator), abs(denominator))
         self.numerator = numerator / gcd
         self.denominator = denominator / gcd
+        self.varType = varType
+        
         if self.denominator < 0 {
             self.numerator = -self.numerator
             self.denominator = -self.denominator

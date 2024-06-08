@@ -7,112 +7,64 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "0989058F-3C9B-43D6-BD95-C0813E8320F5"
-            shouldBeEnabled = "No"
+            uuid = "EA30B151-9D88-4B8E-BD5A-9A80AF5E86B4"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "simpexMethod/CoreLogic/SimplexSolution.swift"
+            filePath = "simpexMethod/Controller/ResultViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "110"
-            endingLineNumber = "110"
-            landmarkName = "addGomoryCuts()"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
+            landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "E7ADB203-BE57-4955-90FF-7D217590D76D"
+            uuid = "40DA7325-0C3B-4F03-A807-2BCEA4CDE910"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "simpexMethod/CoreLogic/SimplexSolution.swift"
+            filePath = "simpexMethod/Controller/ResultViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "111"
-            endingLineNumber = "111"
-            landmarkName = "addGomoryCuts()"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "solveSimplexMethod()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B09F6262-1C3B-4935-B387-E326CF06B0DD"
+            uuid = "CFB9E7C4-5C35-41EB-A79C-F01638D53232"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "simpexMethod/CoreLogic/SimplexSolution.swift"
+            filePath = "simpexMethod/Controller/ResultViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "114"
-            endingLineNumber = "114"
-            landmarkName = "addGomoryCuts()"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
+            landmarkName = "solveSimplexMethod()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C416D075-6124-4EC0-843F-19C0AC63378E"
+            uuid = "03A04906-0DF6-4BCA-B093-8685504471DC"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "simpexMethod/CoreLogic/SimplexSolution.swift"
+            filePath = "simpexMethod/Controller/ResultViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "125"
-            endingLineNumber = "125"
-            landmarkName = "addGomoryCuts()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "0001F5CB-54AE-46A5-9D73-3AC94399CF28"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "simpexMethod/CoreLogic/SimplexSolution.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "128"
-            endingLineNumber = "128"
-            landmarkName = "addGomoryCuts()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "0A5C477A-D0A7-48B4-AFD8-3D7EF965331C"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "simpexMethod/CoreLogic/SimplexSolution.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "121"
-            endingLineNumber = "121"
-            landmarkName = "addGomoryCuts()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "D6251ACC-3338-4F8D-8725-DBDAE45F9FED"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "simpexMethod/CoreLogic/SimplexSolution.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "123"
-            endingLineNumber = "123"
-            landmarkName = "addGomoryCuts()"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "solveSimplexMethod()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

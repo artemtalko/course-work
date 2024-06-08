@@ -52,6 +52,7 @@ final class ResultViewController: UIViewController {
         }
         
         for iteration in iterations {
+            
             let tableView = UITableView()
             tableView.dataSource = self
             tableView.delegate = self
@@ -71,11 +72,14 @@ final class ResultViewController: UIViewController {
         guard let simplexSolution = simplexSolution else { return }
         
         let result = simplexSolution.solveWithIterations()
+        
         iterations = result.iterations
         
         // Виведення фінального рішення в консоль
         print("Final Solution:")
         print(result.solutionString)
+        print("/////---------------------/////")
+        print(iterations)
     }
     
     private func setupTableView() {

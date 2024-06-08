@@ -97,6 +97,7 @@ extension InputFunctionViewController {
             }
             let fractionCoefficients = coefficients.map { Fraction(Int($0), 1) }
             let rhs = constraintValues.rhs.map { Fraction(Int($0), 1) }
+            
             constraintsData.append((fractionCoefficients, constraintValues.sign, rhs))
         }
         
