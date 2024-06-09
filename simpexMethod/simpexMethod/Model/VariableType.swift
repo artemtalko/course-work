@@ -8,5 +8,5 @@
 import Foundation
 
 enum VariableType {
-    case regular, slack, artificial, delta
+    case regular, slack, artificial, delta, personal
 }

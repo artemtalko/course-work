@@ -7,35 +7,63 @@
 
 import Foundation
 
-struct SimplexTableau {
-    var tableau: [[Fraction]]
+
+class SimplexTableau {
+    var objectiveCoefficients: [Fraction]
+    var basis: [Int]
+    var matrix: [[Fraction]]
+    var rhs: [Fraction]
+    var deltaRow: [Fraction]
+    var basisObjectiveCoefficients: [Fraction] // Новий масив для зберігання коефіцієнтів базисних змінних
+    
     var numberOfConstraints: Int
     var numberOfVariables: Int
     
-    init(c: [Fraction], A: [[Fraction]], b: [Fraction]) {
-        let numberOfConstraints = A.count
-        let numberOfVariables = c.count
+    init(c: [Fraction], A: [[Fraction]], b: [Fraction], deltaRow: [Fraction]) {
+        self.numberOfConstraints = A.count
+        self.numberOfVariables = c.count
         
-        var tableau = A
+        self.objectiveCoefficients = c
+        self.basis = Array(numberOfVariables..<(numberOfVariables + numberOfConstraints))
+        self.matrix = A
+        self.rhs = b
+        self.deltaRow = deltaRow
+        self.basisObjectiveCoefficients = Array(repeating: Fraction(0, 1), count: numberOfConstraints) // Ініціалізація
         
-        // Add slack variables
-        for i in 0..<numberOfConstraints {
-            for j in 0..<numberOfConstraints {
-                tableau[i].append(Fraction(i == j ? 1 : 0, 1, .slack))
+        updateBasisObjectiveCoefficients()
+    }
+    
+    func updateBasisObjectiveCoefficients() {
+        for i in 0..<basis.count {
+            let basisIndex = basis[i]
+            if basisIndex < objectiveCoefficients.count {
+                basisObjectiveCoefficients[i] = objectiveCoefficients[basisIndex]
+            } else {
+                basisObjectiveCoefficients[i] = Fraction(0, 1) // або інше значення за замовчуванням
             }
-            tableau[i].append(b[i])
         }
+    }
+
+    
+    func copy() -> SimplexTableau {
+        let c = objectiveCoefficients.map { $0 }
+        let A = matrix.map { $0.map { $0 } }
+        let b = rhs.map { $0 }
+        let deltaRow = self.deltaRow.map { $0 }
+        let basisObjectiveCoefficients = self.basisObjectiveCoefficients.map { $0 }
         
-        // Add objective function row
-        var objectiveFunctionRow = c.map { Fraction(-$0.numerator, $0.denominator, $0.varType) }
-        for _ in 0..<numberOfConstraints {
-            objectiveFunctionRow.append(Fraction(0, 1, .slack))
+        let copyTableau = SimplexTableau(c: c, A: A, b: b, deltaRow: deltaRow)
+        copyTableau.basisObjectiveCoefficients = basisObjectiveCoefficients
+        
+        return copyTableau
+    }
+    
+    func printTableau() {
+        for i in 0..<matrix.count {
+            print(matrix[i].map { $0.description }.joined(separator: "\t | \t") + "\t | \t" + rhs[i].description)
         }
-        objectiveFunctionRow.append(Fraction(0, 1, .regular))
-        tableau.append(objectiveFunctionRow)
-        
-        self.tableau = tableau
-        self.numberOfConstraints = numberOfConstraints
-        self.numberOfVariables = numberOfVariables
+        print("c: " + objectiveCoefficients.map { $0.description }.joined(separator: "\t | \t"))
+        print("delta: " + deltaRow.map { $0.description }.joined(separator: "\t | \t"))
+        print("Basis Objective Coefficients: " + basisObjectiveCoefficients.map { $0.description }.joined(separator: "\t | \t"))
     }
 }

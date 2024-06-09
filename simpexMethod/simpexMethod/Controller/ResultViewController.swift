@@ -40,9 +40,10 @@ final class ResultViewController: UIViewController {
     }
 
     func configure(simplexTableau: SimplexTableau) {
-        self.simplexSolution = SimplexSolution(tableau: simplexTableau)
-        tableau = simplexTableau.tableau
-    }
+           self.simplexSolution = SimplexSolution(tableau: simplexTableau)
+           self.simplexTableau = simplexTableau
+           mainView.simplexTableView.reloadData()
+       }
     
     private func setupTables() {
     
@@ -73,11 +74,18 @@ final class ResultViewController: UIViewController {
         
         let result = simplexSolution.solveWithIterations()
         
-        iterations = result.iterations
+       // iterations = result.iterations
         
         // Виведення фінального рішення в консоль
         print("Final Solution:")
         print(result.solutionString)
+        
+        print("hueta tyt")
+        
+        for i in 0..<(result.iterations.last?.rhs.count)! {
+            print(result.iterations.last?.rhs[i].varType)
+        }
+      
         print("/////---------------------/////")
         print(iterations)
     }

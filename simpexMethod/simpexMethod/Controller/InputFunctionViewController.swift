@@ -4,7 +4,6 @@
 //
 //  Created by Artem Talko on 30.05.2024.
 //
-
 import UIKit
 
 final class InputFunctionViewController: UIViewController {
@@ -14,7 +13,7 @@ final class InputFunctionViewController: UIViewController {
     private var numberOfConstraints: Int = 1
     
     override func loadView() {
-         view = mainView
+        view = mainView
     }
     
     override func viewDidLoad() {
@@ -39,23 +38,21 @@ final class InputFunctionViewController: UIViewController {
     }
 }
 
-
 //MARK: TableView
 extension InputFunctionViewController: UITableViewDelegate, UITableViewDataSource {
-        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            return numberOfConstraints
-        }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return numberOfConstraints
+    }
     
-        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: InputFunctionTableViewCell.cellID, for: indexPath) as? InputFunctionTableViewCell else {
-                return UITableViewCell()
-            }
-            cell.selectionStyle = .none
-            cell.countOfVariables = numberOfVariables
-            return cell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: InputFunctionTableViewCell.cellID, for: indexPath) as? InputFunctionTableViewCell else {
+            return UITableViewCell()
         }
+        cell.selectionStyle = .none
+        cell.countOfVariables = numberOfVariables
+        return cell
+    }
 }
-
 
 //MARK: Helpers
 extension InputFunctionViewController {
@@ -77,14 +74,13 @@ extension InputFunctionViewController {
             targetFunctionData.append(Fraction(Int(value), 1))
         }
         
+        print("Target Function Data: \(targetFunctionData)")
         return targetFunctionData
     }
     
+    //≤  ≥  =
     // Constraints data
-    ///coefficients are for each variable in the target function
-    ///sign is the sign of the constraint
-    ///rhs is the right hand side of the constraint
-    private func getConstraintsData() -> [(coefficients: [Fraction], sign: String, rhs: Fraction?)]{
+    private func getConstraintsData() -> [(coefficients: [Fraction], sign: String, rhs: Fraction?)] {
         var constraintsData: [(coefficients: [Fraction], sign: String, rhs: Fraction?)] = []
         
         for cell in mainView.constraintsTableView.visibleCells {
@@ -95,39 +91,98 @@ extension InputFunctionViewController {
             guard let coefficients = constraintValues.coefficients else {
                 continue
             }
-            let fractionCoefficients = coefficients.map { Fraction(Int($0), 1) }
-            let rhs = constraintValues.rhs.map { Fraction(Int($0), 1) }
-            
-            constraintsData.append((fractionCoefficients, constraintValues.sign, rhs))
+            var fractionCoefficients = coefficients.map { Fraction(Int($0), 1) }
+            guard var rhs = constraintValues.rhs.map({ Fraction(Int($0), 1) }) else {
+                continue
+            }
+            rhs.varType = .personal
+
+            // Check if the right-hand side is negative
+            if rhs.numerator < 0 {
+                // Change the sign of all coefficients and the sign of the constraint
+                fractionCoefficients = fractionCoefficients.map { Fraction(-$0.numerator, $0.denominator) }
+                constraintsData.append((fractionCoefficients, flipSign(constraintValues.sign), Fraction(-rhs.numerator, rhs.denominator)))
+            } else {
+                constraintsData.append((fractionCoefficients, constraintValues.sign, rhs))
+            }
         }
         
-        print("constraintsData-->>>>")
-        print(constraintsData)
-        print("------------------")
+        print("Constraints Data: \(constraintsData)")
         return constraintsData
+    }
+    
+    // Function to flip the sign
+    private func flipSign(_ sign: String) -> String {
+        switch sign {
+        case "≤":
+            return "≥"
+        case "≥":
+            return "≤"
+        default:
+            return sign
+        }
     }
     
     private func prepareSimplexTableau() -> SimplexTableau {
         let targetCoeff = getTargetFunctionData()
         let constrData = getConstraintsData()
-         
+
         var A: [[Fraction]] = []
         var b: [Fraction] = []
-         
+        var updatedTargetCoeff = targetCoeff
+
         for constraint in constrData {
             guard let rhs = constraint.rhs else {
                 continue
             }
-            A.append(constraint.coefficients)
+      
+            var coefficients = constraint.coefficients
+            var slackSurplusArtificial: [Fraction] = []
+            
+            switch constraint.sign {
+            case "≤":
+                // Add slack variable
+                slackSurplusArtificial = Array(repeating: Fraction(0, 1), count: constrData.count)
+                slackSurplusArtificial[A.count] = Fraction(1, 1)
+                coefficients.append(contentsOf: slackSurplusArtificial)
+                updatedTargetCoeff.append(Fraction(0, 1))
+            case "≥":
+                // Add surplus variable and artificial variable
+                slackSurplusArtificial = Array(repeating: Fraction(0, 1), count: constrData.count)
+                slackSurplusArtificial[A.count] = Fraction(-1, 1)
+                coefficients.append(contentsOf: slackSurplusArtificial)
+                updatedTargetCoeff.append(Fraction(0, 1))
+                // Artificial variable
+                coefficients.append(Fraction(1, 1))
+                updatedTargetCoeff.append(Fraction(0, 1)) // Artificial variables are usually not added to the objective function directly
+            default:
+                continue
+            }
+            
+            A.append(coefficients)
+            
             b.append(rhs)
+            
         }
-         
-        print(SimplexTableau(c: targetCoeff, A: A, b: b))
+
+        // Normalize the size of each row in A to match the total number of variables + slack/surplus/artificial variables
+        let totalVariables = updatedTargetCoeff.count
+        for i in 0..<A.count {
+            while A[i].count < totalVariables {
+                A[i].append(Fraction(0, 1))
+            }
+        }
+
+        // Create the delta row
+        var deltaRow = updatedTargetCoeff.map { Fraction(-$0.numerator, $0.denominator, $0.varType) }
         
-        return SimplexTableau(c: targetCoeff, A: A, b: b)
+        let tableau = SimplexTableau(c: updatedTargetCoeff, A: A, b: b, deltaRow: deltaRow)
+        print("Initial Simplex Tableau:")
+        tableau.printTableau()
+        
+        return tableau
     }
 }
-
 
 //MARK: Action
 extension InputFunctionViewController {
