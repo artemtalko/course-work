@@ -27,9 +27,13 @@ struct Fraction: CustomStringConvertible, Comparable {
     static func gcd(_ a: Int, _ b: Int) -> Int {
         return b == 0 ? a : gcd(b, a % b)
     }
-
+    
     var description: String {
-        return "\(numerator)/\(denominator)"
+        if denominator == 1 {
+            return "\(numerator)"
+        } else {
+            return "\(numerator)/\(denominator)"
+        }
     }
 
     static func + (lhs: Fraction, rhs: Fraction) -> Fraction {

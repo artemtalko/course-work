@@ -1,118 +1,132 @@
-//
-//  ResultViewController.swift
-//  simpexMethod
-//
-//  Created by Artem Talko on 02.06.2024.
-//
-
 import UIKit
 
-final class ResultViewController: UIViewController {
-    private let mainView = ResultView()
-    private var simplexSolution: SimplexSolution?
-    private var simplexTableau: SimplexTableau?
+
+class ResultViewController: UIViewController {
+    private var simplexSolution: [SimplexTableau]
     
-    var iterations: [[[Fraction]]] = [] {
-        didSet {
-            setupTables()
-        }
+    private let tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .grouped)
+        tableView.backgroundColor = .white
+        tableView.register(SimplexIterationCell.self, forCellReuseIdentifier: "SimplexIterationCell")
+        tableView.register(SimplexHeaderView.self, forHeaderFooterViewReuseIdentifier: "SimplexHeaderView")
+        return tableView
+    }()
+    
+    init(simplexSolution: [SimplexTableau]) {
+        self.simplexSolution = simplexSolution
+        super.init(nibName: nil, bundle: nil)
     }
-
-    var tableau: [[Fraction]] = [] {
-        didSet {
-            mainView.simplexTableView.reloadData()
-        }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-
-    override func loadView() {
-        view = mainView
-    }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.view.backgroundColor = UIColor(red: 0.2314, green: 0.1333, blue: 0.3176, alpha: 1.0)
-        addTargets()
         
-        // Configure the view if the tableau is already set
-        if let tableau = simplexTableau {
-            configure(simplexTableau: tableau)
-        }
-    }
-
-    func configure(simplexTableau: SimplexTableau) {
-           self.simplexSolution = SimplexSolution(tableau: simplexTableau)
-           self.simplexTableau = simplexTableau
-           mainView.simplexTableView.reloadData()
-       }
-    
-    private func setupTables() {
-    
-        for subview in mainView.stackView.arrangedSubviews where subview is UITableView {
-            mainView.stackView.removeArrangedSubview(subview)
-            subview.removeFromSuperview()
-        }
+        setupTableView()
         
-        for iteration in iterations {
-            
-            let tableView = UITableView()
-            tableView.dataSource = self
-            tableView.delegate = self
-            tableView.register(SimplexTableauCell.self, forCellReuseIdentifier: SimplexTableauCell.cellID)
-            tableView.tag = iterations.firstIndex(of: iteration) ?? 0
-            
-            mainView.stackView.addArrangedSubview(tableView)
-            tableView.reloadData()
-        }
-    }
-
-    private func addTargets() {
-        mainView.solveButton.addTarget(self, action: #selector(solveSimplexMethod), for: .touchUpInside)
-    }
-
-    @objc private func solveSimplexMethod() {
-        guard let simplexSolution = simplexSolution else { return }
-        
-        let result = simplexSolution.solveWithIterations()
-        
-       // iterations = result.iterations
-        
-        // Виведення фінального рішення в консоль
-        print("Final Solution:")
-        print(result.solutionString)
-        
-        print("hueta tyt")
-        
-        for i in 0..<(result.iterations.last?.rhs.count)! {
-            print(result.iterations.last?.rhs[i].varType)
-        }
-      
-        print("/////---------------------/////")
-        print(iterations)
+        print(simplexSolution.last!.pivotSearchingString)
     }
     
     private func setupTableView() {
-        mainView.simplexTableView.dataSource = self
-        mainView.simplexTableView.delegate = self
-        mainView.simplexTableView.register(SimplexTableauCell.self, forCellReuseIdentifier: SimplexTableauCell.cellID)
+        tableView.delegate = self
+        tableView.dataSource = self
+        view.addSubview(tableView)
+        tableView.frame = view.bounds
+    }
+}
+
+extension ResultViewController: UITableViewDelegate, UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return simplexSolution.count
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SimplexIterationCell", for: indexPath) as! SimplexIterationCell
+        cell.configure(with: simplexSolution[indexPath.section])
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 400 // Встановіть відповідну висоту для таблиці
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "SimplexHeaderView") as! SimplexHeaderView
+        
+        switch section {
+        case 0:
+            headerView.titleLabel.text = "Початкова симплекс-таблиця"
+        default:
+            headerView.titleLabel.text = "Ітерація \(section)"
+        }
+   
+        if section < simplexSolution.last!.pivotSearchingString!.endIndex {
+            headerView.pivotLabel.text = simplexSolution.last!.pivotSearchingString![section]
+        }
+        else {
+            headerView.pivotLabel.text = " "
+        }
+      
+        return headerView
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 100
     }
 }
 
 
-//MARK: TableView
-extension ResultViewController: UITableViewDataSource, UITableViewDelegate {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return iterations[tableView.tag].count
-    }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // Повертаємо кількість стовпців в поточному рядку
-        return iterations[tableView.tag][section].count
-    }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SimplexTableauCell", for: indexPath) as! SimplexTableauCell
-        let row = iterations[tableView.tag][indexPath.section]
-        cell.configure(with: row)
-        return cell
+class SimplexHeaderView: UITableViewHeaderFooterView {
+    
+    let titleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .black
+        label.font = UIFont.boldSystemFont(ofSize: 32)
+        label.textAlignment = .left
+        
+        return label
+    }()
+    
+    let pivotLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 24)
+        label.textAlignment = .left
+        label.textColor = .gray
+        return label
+    }()
+    
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(pivotLabel)
+        
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        pivotLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            pivotLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            pivotLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            pivotLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            pivotLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

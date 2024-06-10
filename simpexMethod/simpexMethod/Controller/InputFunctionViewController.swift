@@ -139,26 +139,29 @@ extension InputFunctionViewController {
             var coefficients = constraint.coefficients
             var slackSurplusArtificial: [Fraction] = []
             
-            switch constraint.sign {
-            case "≤":
-                // Add slack variable
-                slackSurplusArtificial = Array(repeating: Fraction(0, 1), count: constrData.count)
-                slackSurplusArtificial[A.count] = Fraction(1, 1)
-                coefficients.append(contentsOf: slackSurplusArtificial)
-                updatedTargetCoeff.append(Fraction(0, 1))
-            case "≥":
-                // Add surplus variable and artificial variable
-                slackSurplusArtificial = Array(repeating: Fraction(0, 1), count: constrData.count)
-                slackSurplusArtificial[A.count] = Fraction(-1, 1)
-                coefficients.append(contentsOf: slackSurplusArtificial)
-                updatedTargetCoeff.append(Fraction(0, 1))
-                // Artificial variable
-                coefficients.append(Fraction(1, 1))
-                updatedTargetCoeff.append(Fraction(0, 1)) // Artificial variables are usually not added to the objective function directly
-            default:
-                continue
-            }
+            //MARK: Inset Oleg method
+            slackSurplusArtificial = Array(repeating: Fraction(0, 1), count: constrData.count)
+            slackSurplusArtificial[A.count] = Fraction(1, 1)
+            coefficients.append(contentsOf: slackSurplusArtificial)
+            updatedTargetCoeff.append(Fraction(0, 1))
             
+//            switch constraint.sign {
+//            case "≤":
+//                // Add slack variable
+//               
+//            case "≥":
+//                // Add surplus variable and artificial variable
+//                slackSurplusArtificial = Array(repeating: Fraction(0, 1), count: constrData.count)
+//                slackSurplusArtificial[A.count] = Fraction(-1, 1)
+//                coefficients.append(contentsOf: slackSurplusArtificial)
+//                updatedTargetCoeff.append(Fraction(0, 1))
+//                // Artificial variable
+//                coefficients.append(Fraction(1, 1))
+//                updatedTargetCoeff.append(Fraction(0, 1)) // Artificial variables are usually not added to the objective function directly
+//            default:
+//                continue
+//            }
+//            
             A.append(coefficients)
             
             b.append(rhs)
@@ -174,11 +177,13 @@ extension InputFunctionViewController {
         }
 
         // Create the delta row
-        var deltaRow = updatedTargetCoeff.map { Fraction(-$0.numerator, $0.denominator, $0.varType) }
+        let deltaRow = updatedTargetCoeff.map { Fraction(-$0.numerator, $0.denominator, $0.varType) }
         
-        let tableau = SimplexTableau(c: updatedTargetCoeff, A: A, b: b, deltaRow: deltaRow)
+        let tableau = SimplexTableau(c: updatedTargetCoeff, A: A, b: b, deltaRow: deltaRow, pivotSearchingString: [])
         print("Initial Simplex Tableau:")
         tableau.printTableau()
+        
+        
         
         return tableau
     }
@@ -187,11 +192,21 @@ extension InputFunctionViewController {
 //MARK: Action
 extension InputFunctionViewController {
     @objc private func selectionButtonPressed(_ sender: UIButton) {
-        let resultVC = ResultViewController()
+        
+        
+        
         let simplexTableau = prepareSimplexTableau()
         
-        resultVC.configure(simplexTableau: simplexTableau)
+        let simplexSolution = SimplexSolution(tableau: simplexTableau)
         
+        
+        
+        let result = simplexSolution.solveWithIterations()
+        
+        //MARK: в резалті всі ітерації(весь розвʼязок), треба передати його в resultVC та правильно показати в таблицях.
+        
+        
+        let resultVC = ResultViewController(simplexSolution: result)
         navigationController?.pushViewController(resultVC, animated: true)
     }
 }

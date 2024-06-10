@@ -9,48 +9,43 @@ class SimplexSolution {
         self.tableau = tableau
     }
     
-    
     //MARK: solveWithIterations
-    func solveWithIterations() -> (iterations: [SimplexTableau], solutionString: String) {
+    func solveWithIterations() -> [SimplexTableau] {
         var iteration = 0
         iterations.append(tableau.copy())
+        print(tableau.printTableau())
+        
         
         while !isOptimal() && iteration < 100 {
-            print("Iteration \(iteration):")
-            tableau.printTableau()
-            
             iteration += 1
             guard let pivot = findPivot() else { break }
+          
             performPivoting(pivotRow: pivot.row, pivotCol: pivot.col)
-            iterations.append(tableau.copy())
+            
+            iterations.append(tableau.copy()) 
+            print(tableau.printTableau())
         }
         
         while hasFractionalSolution() && iteration < 20 {
-            print("Before Gomory Cut:")
-            tableau.printTableau()
-            
             addGomoryCuts()
-            
-            print("After Gomory Cut:")
-            tableau.printTableau()
-            
+
             iteration += 1
             while !isOptimal() && iteration < 10 {
                 iteration += 1
                 guard let pivot = findPivot() else { break }
                 performPivoting(pivotRow: pivot.row, pivotCol: pivot.col)
                 iterations.append(tableau.copy())
+                print(tableau.printTableau())
             }
         }
         
-        let solutionString = solutionAsString()
-        return (iterations, solutionString)
+ 
+        return iterations
     }
     
     
     private func isOptimal() -> Bool {
         let optimal = !tableau.deltaRow.contains { $0 < Fraction(0, 1) }
-        print("Is optimal: \(optimal)")
         return optimal
     }
     
@@ -75,13 +70,15 @@ class SimplexSolution {
         }
         
         guard let row = pivotRow else { return nil }
-        print("Pivot found at row: \(row), col: \(pivotCol)")
         return (row, pivotCol)
     }
     
     //MARK: performPivoting
     private func performPivoting(pivotRow: Int, pivotCol: Int) {
         let pivotElement = tableau.matrix[pivotRow][pivotCol]
+        
+        tableau.pivotSearchingString?.append("Performing pivoting on row: \(pivotRow.description), col: \(pivotCol.description), pivotElement: \(pivotElement.description)")
+        
         print("Performing pivoting on row: \(pivotRow), col: \(pivotCol), pivotElement: \(pivotElement)")
         
         // Normalize the pivot row
@@ -100,10 +97,6 @@ class SimplexSolution {
                 tableau.rhs[i] = tableau.rhs[i] - factor * tableau.rhs[pivotRow]
             }
         }
-        
-        // Update the basis
-        //MARK: Тут крашиться додаток, тому що виходить за межі масиву, але я не розумію чому і як це виправити
-        //q: how to fix this?
         
         tableau.basis[pivotRow] = pivotCol
         
@@ -131,37 +124,22 @@ class SimplexSolution {
     private func addGomoryCuts() {
         for i in 0..<tableau.basisObjectiveCoefficients.count {
             if tableau.basisObjectiveCoefficients[i] != Fraction(0, 1) {
-                print("->" + String(i))
-                
                 let rhs = tableau.rhs[i]
-                
                 let fractionalPart = rhs - Fraction(rhs.numerator / rhs.denominator, 1)
                 
                 if fractionalPart.numerator != 0 {
-                    
-                    // Add a new constraint
+
                     var newRow = tableau.matrix[i].map { element -> Fraction in
                         let fractionalPart = element - Fraction(element.numerator / element.denominator, 1)
                         return fractionalPart.numerator < 0 ? fractionalPart + Fraction(1, 1) : fractionalPart
                     }
-                    
-                    // Add the fractional part to the new row
-                    if fractionalPart.numerator > 0 {
-                        newRow.append(fractionalPart)
-                    } else {
-                        newRow.append(-fractionalPart)
-                    }
-                    
-                    
-                    // Add the new row to the tableau
+
                     newRow = newRow.map { $0 * Fraction(-1, 1) }
-                    
-                    // Add the new row to the tableau
+
                     tableau.matrix.append(newRow)
-                    
-                    
                     tableau.rhs.append(fractionalPart * Fraction(-1, 1))
-                    
+                    tableau.basis.append(tableau.basis.count + 1)
+                    tableau.basisObjectiveCoefficients.append(Fraction(0, 1))
                     tableau.numberOfConstraints += 1
                     
                     for j in 0..<tableau.matrix.count {
@@ -171,19 +149,16 @@ class SimplexSolution {
                             tableau.matrix[j].append(Fraction(1, 1))
                         }
                     }
-                    
-               //     tableau.updateBasisObjectiveCoefficients()
-                    
+             
                     let minIndex = findMinGamoryElement(tableau.matrix.last!)
                     
                     performPivoting(pivotRow: tableau.matrix.count - 1, pivotCol: minIndex)
-                    //                    performPivoting(pivotRow: tableau.matrix.count - 1, pivotCol: minIndex)
                     iterations.append(tableau.copy())
+                    print(tableau.printTableau())
                 }
             }
         }
     }
-    
     
     //MARK: findMinGamoryElement
     private func findMinGamoryElement(_ newLine: [Fraction]) -> Int {
